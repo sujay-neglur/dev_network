@@ -7,11 +7,13 @@ const posts = require("./routes/api/posts");
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const cors = require("cors");
+const keys = require("./config/keys");
+const port = process.env.PORT || 5000;
+const path = require("path");
 require("dotenv").config();
 
-const port = process.env.PORT || 5000;
+const db = keys.mongoURI;
 
-const db = `mongodb://${process.env.db_user}:${process.env.db_password}@${process.env.host}/${process.env.database}`;
 mongoose
   .connect(db, { useNewUrlParser: true })
   .then(() => console.log("Mongodb connected"))
@@ -22,9 +24,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 // Passport middleware
-app.use(cors());
 app.use(passport.initialize());
 
 // Passport config
@@ -34,5 +34,12 @@ app.use("/api/users", users);
 app.use("/api/profile", profile);
 app.use("/api/posts", posts);
 
-
+// Serve static assets if in production
+if (process.env.NODE_ENV === "production") {
+  // Set static folder
+  app.use(express.static("client/build"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+  });
+}
 app.listen(port, () => console.log("Server started"));

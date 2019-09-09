@@ -12,7 +12,7 @@ const ValidatePostInput = require("../../validation/post");
  * @access Public
  */
 router.get("/test", (req, res) => {
-    res.json({msg: "All good for posts"});
+    res.json({msg: "onLikeClickAll good for posts"});
 });
 
 /**
@@ -128,7 +128,7 @@ router.post("/unlike/:id", passport.authenticate("jwt", {session: false}), (req,
 router.post("/comment/:id", passport.authenticate("jwt", {session: false}), (req, res) => {
     const {errors, isValid} = ValidatePostInput(req.body);
     if (!isValid) {
-        res.status(400).json(errors);
+       return res.status(400).json(errors);
     }
     Post.findById(req.params.id)
         .then(post => {
