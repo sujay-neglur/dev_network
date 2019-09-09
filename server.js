@@ -10,7 +10,6 @@ const cors = require("cors");
 const keys = require("./config/keys");
 const port = process.env.PORT || 5000;
 const path = require("path");
-require("dotenv").config();
 
 const db = keys.mongoURI;
 
